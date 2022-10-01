@@ -7,15 +7,16 @@
     "start": "node index.js",
     "dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build:ui": "rm -rf build && cd ../FullStackOPEN/Part3/phonebook && npm run build && cp -r build /Users/janne/Desktop/GIT/PhonebookBackend1",
+    "build:ui": "rm -rf build && cd /Users/janne/Desktop/GIT/FullStackOPEN/Part3/phonebook  && npm run build && cp -r build /Users/janne/Desktop/GIT/PhonebookBackend1",
     "deploy": "git push heroku main",
-    "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push && npm run deploy",
+    "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push && npm run deploy",    
     "logs:prod": "heroku logs --tail"
   },
   "author": "Janne",
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
     "express": "^4.18.1",
     "mongoose": "^6.6.2",
     "morgan": "^1.10.0"

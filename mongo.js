@@ -8,25 +8,38 @@ if (process.argv.length<3) {
 const password = process.argv[2]
 
 const url =
-  `mongodb+srv://fullstack:${password}@cluster0.nxgcwzj.mongodb.net/PhonebookDB?retryWrites=true&w=majority`
+  `mongodb+srv://fullstack:${password}@cluster0.nxgcwzj.mongodb.net/phonebookApp?retryWrites=true&w=majority`
 
 mongoose.connect(url)
 
-const noteSchema = new mongoose.Schema({
-  content: String,
-  date: Date,
-  important: Boolean,
+const personSchema = new mongoose.Schema({
+  name: String,
+  number: String,
+  id: Number,
 })
 
-const Note = mongoose.model('Note', noteSchema)
+const Person = mongoose.model('person', personSchema)
 
-const note = new Note({
-  content: 'HTML is Easy',
-  date: new Date(),
-  important: true,
-})
+const generateId = () => {
+  return Math.round(Math.random() * (100000 - 10) + 10);
+}
 
-note.save().then(result => {
-  console.log('note saved!')
-  mongoose.connection.close()
-})
+if(process.argv.length>3){
+  const person = new Person({
+    name: process.argv[3],
+    number: process.argv[4],
+    id: generateId(),
+  })
+
+  person.save().then(result => {
+    console.log(`added ${process.argv[3]} number ${process.argv[4]} to phonebook`)
+    mongoose.connection.close()
+  })
+}else if(process.argv.length === 3){
+  Person.find({}).then(result => {
+    result.forEach(elem => {
+      console.log(elem)
+    });
+    mongoose.connection.close()
+  })
+}
