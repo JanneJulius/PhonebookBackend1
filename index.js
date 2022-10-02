@@ -6,14 +6,14 @@ const app = express()
 const Person = require('./models/person')
 
 
-
+/*
 const requestLogger = (request, response, next) => {
   console.log(
-  request.method,
-  request.path,
-  response.statusCode);
-  next();
-};
+    request.method,
+    request.path,
+    response.statusCode)
+  next()
+}*/
 
 morgan.token('data', function getId(req) {
   if (req.method === 'POST')
@@ -33,47 +33,47 @@ app.use(cors())
 app.get('/api/persons', (req, res, next) => {
 
   Person.find({})
-  .then(person => {
-    res.json(person)
-  })
-  .catch(error => next(error))
+    .then(person => {
+      res.json(person)
+    })
+    .catch(error => next(error))
 })
 
 // Get info 
 app.get('/api/info', (req, res, next) => {
-  const date = new Date();
+  const date = new Date()
 
   Person.find({})
-  .then(person => {
-    const sum = person.length;
-    res.send(
-      `<div>
-        <p>Phonebook has info for ${sum} people</p>
-        <p>${date}</p>
-      </div>`
-    )
-  })
-  .catch(error => next(error))
+    .then(person => {
+      const sum = person.length
+      res.send(
+        `<div>
+          <p>Phonebook has info for ${sum} people</p>
+          <p>${date}</p>
+        </div>`
+      )
+    })
+    .catch(error => next(error))
 })
 
 // Get specific person
 app.get('/api/persons/:id', (req, res, next) => {
   
   Person.findById(req.params.id)
-  .then(person => {
-    if (person) {
-      res.json(person)
-    } else {
-      res.status(404).end()
-    }
-  })
-  .catch(error => next(error))
+    .then(person => {
+      if (person) {
+        res.json(person)
+      } else {
+        res.status(404).end()
+      }
+    })
+    .catch(error => next(error))
 })
 
 // Delete specific person
 app.delete('/api/persons/:id', (req, res, next) => {
   Person.findByIdAndRemove(req.params.id)
-    .then(result => {
+    .then(() => {
       res.status(204).end()
     })
     .catch(error => next(error))
@@ -81,37 +81,21 @@ app.delete('/api/persons/:id', (req, res, next) => {
 
 // Update existing person's phonenumber
 app.put('/api/persons/:id', (req, res, next) => {
-  const body = req.body
 
-  if (body.number === '') {
-    return res.status(400).json({ error: 'number missing' })
-  }
-  
-  Person.findByIdAndUpdate(req.params.id, {
-    number: body.number
-  }, { new: true })
-  .then(savedPerson => {
-    res.json(savedPerson)
-  })
-  .catch(error => next(error))
+  const { name, number } = req.body
+
+  Person.findByIdAndUpdate(req.params.id, 
+    { name, number },
+    { new: true, runValidators: true, context: 'query'  })
+    .then(savedPerson => {
+      res.json(savedPerson)
+    })
+    .catch(error => next(error))
 })
 
 // Create new person
 app.post('/api/persons', (req, res, next) => {
   const body = req.body
-  console.log(body)
-
-  if (body.number === '' && body.name === '') {
-    return res.status(400).json({ error: 'content missing' })
-  }
-
-  if(body.number === ""){
-    return res.status(400).json({ error: 'number missing' })
-  }
-
-  if(body.name === ""){
-    return res.status(400).json({ error: 'name missing' })
-  }
 
   const person = new Person({
     name: body.name,
@@ -119,10 +103,10 @@ app.post('/api/persons', (req, res, next) => {
   })
 
   person.save()
-  .then(savedPerson => {
-    res.json(savedPerson)
-  })
-  .catch(error => next(error))
+    .then(savedPerson => {
+      res.json(savedPerson)
+    })
+    .catch(error => next(error))
 })
 
 const unknownEndpoint = (request, response) => {
@@ -135,6 +119,8 @@ const errorHandler = (error, request, response, next) => {
   console.error(error.message)
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
+  }else if (error.name === 'ValidationError') {
+    return response.status(400).json({ error: error.message })
   }
   next(error)
 }

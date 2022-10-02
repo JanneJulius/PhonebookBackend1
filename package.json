@@ -9,8 +9,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build:ui": "rm -rf build && cd /Users/janne/Desktop/GIT/FullStackOPEN/Part3/phonebook  && npm run build && cp -r build /Users/janne/Desktop/GIT/PhonebookBackend1",
     "deploy": "git push heroku main",
-    "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push && npm run deploy",    
-    "logs:prod": "heroku logs --tail"
+    "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push && npm run deploy",
+    "logs:prod": "heroku logs --tail",
+    "lint": "eslint ."
   },
   "author": "Janne",
   "license": "ISC",
@@ -19,9 +20,12 @@
     "dotenv": "^16.0.3",
     "express": "^4.18.1",
     "mongoose": "^6.6.2",
+    "mongoose-unique-validator": "^3.1.0",
     "morgan": "^1.10.0"
   },
   "devDependencies": {
+    "eslint": "^8.24.0",
+    "eslint-plugin-react": "^7.31.8",
     "nodemon": "^2.0.20"
   }
 }

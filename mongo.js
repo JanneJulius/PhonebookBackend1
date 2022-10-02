@@ -21,7 +21,7 @@ const personSchema = new mongoose.Schema({
 const Person = mongoose.model('person', personSchema)
 
 const generateId = () => {
-  return Math.round(Math.random() * (100000 - 10) + 10);
+  return Math.round(Math.random() * (100000 - 10) + 10)
 }
 
 if(process.argv.length>3){
@@ -31,7 +31,7 @@ if(process.argv.length>3){
     id: generateId(),
   })
 
-  person.save().then(result => {
+  person.save().then(() => {
     console.log(`added ${process.argv[3]} number ${process.argv[4]} to phonebook`)
     mongoose.connection.close()
   })
@@ -39,7 +39,7 @@ if(process.argv.length>3){
   Person.find({}).then(result => {
     result.forEach(elem => {
       console.log(elem)
-    });
+    })
     mongoose.connection.close()
   })
 }
